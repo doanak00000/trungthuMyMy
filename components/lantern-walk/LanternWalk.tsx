@@ -8,6 +8,8 @@ import { useStory } from "@/components/story/StoryContext";
 import { getAudio } from "@/lib/audio";
 import { SkyLantern } from "./SkyLantern";
 import { Walkers } from "./Walkers";
+import { MotoRider } from "./MotoRider";
+import { TapIcon } from "@/components/ui/TapIcon";
 import { GlowDefs } from "@/components/ui/GlowDefs";
 import {
   BRIDGE_STOP,
@@ -50,7 +52,7 @@ function Slice({
       viewBox={`0 0 ${SEG_W} 800`}
       preserveAspectRatio="none"
       className={`absolute left-0 top-0 h-full ${className}`}
-      style={{ x, width: `calc(100dvh * ${(SEG_W + 2) / 800})` }}
+      style={{ x, width: `calc(100svh * ${(SEG_W + 2) / 800})` }}
       aria-hidden
     >
       <GlowDefs />
@@ -60,8 +62,14 @@ function Slice({
 }
 
 type Released = { id: number; x: number; y: number };
+/** chờ → LuLu chạy xe tới → xuống xe nắm tay → cùng đi */
+type Phase = "wait" | "arrive" | "dismount" | "walk";
+const ARRIVE_SECONDS = 3.4;
 
-/** Màn 5 — đi rước đèn cùng LuLu. Cảnh tự trôi, chạm vào trời để thả đèn. */
+/**
+ * Màn 5 — MyMy đứng chờ, LuLu chạy xe máy ngược chiều tới đón, dựng xe, nắm tay em
+ * rồi hai đứa cùng đi rước đèn. Cảnh tự trôi, chạm vào đèn để thả đèn trời.
+ */
 export function LanternWalk() {
   const { lantern, go } = useStory();
   const w = messages.walk;
@@ -69,9 +77,10 @@ export function LanternWalk() {
   const geo = useRef<Geo>({ unit: 1, travel: 4800 });
   const walkersRef = useRef<HTMLDivElement>(null);
   const [walking, setWalking] = useState(true);
+  const [phase, setPhase] = useState<Phase>("wait");
+  const [releasedOnce, setReleasedOnce] = useState(false);
   const [caption, setCaption] = useState(-1);
   const [released, setReleased] = useState<Released[]>([]);
-  const [showHint, setShowHint] = useState(true);
   const nextId = useRef(0);
 
   // Tính tỉ lệ: 800 đơn vị thế giới = chiều cao màn hình. Quãng đường đi = tới chân cầu.
@@ -88,23 +97,37 @@ export function LanternWalk() {
     return () => window.removeEventListener("resize", measure);
   }, [progress]);
 
+  // chiếc xe dựng lại bên đường, trôi ra sau theo cảnh khi hai đứa bắt đầu đi
+  const parkedX = useTransform(progress, (p) => -p * geo.current.travel * geo.current.unit);
+
   useEffect(() => {
     getAudio().setMood("walk");
+    const timers = [
+      window.setTimeout(() => {
+        setPhase("arrive");
+        getAudio().motor(ARRIVE_SECONDS);
+      }, 1200),
+      window.setTimeout(() => {
+        setPhase("dismount");
+        getAudio().bell(1.2);
+      }, 1200 + ARRIVE_SECONDS * 1000),
+      window.setTimeout(() => setPhase("walk"), 1200 + ARRIVE_SECONDS * 1000 + 2400),
+    ];
+    return () => timers.forEach(window.clearTimeout);
+  }, []);
+
+  useEffect(() => {
+    if (phase !== "walk") return;
     const controls = animate(progress, 1, {
       duration: festivalConfig.walkDurationSeconds,
       ease: [0.35, 0.05, 0.55, 1],
-      delay: 1.2,
       onComplete: () => {
         setWalking(false);
         window.setTimeout(() => go("bridge"), 1800);
       },
     });
-    const hint = window.setTimeout(() => setShowHint(false), 7000);
-    return () => {
-      controls.stop();
-      window.clearTimeout(hint);
-    };
-  }, [progress, go]);
+    return () => controls.stop();
+  }, [phase, progress, go]);
 
   useMotionValueEvent(progress, "change", (p) => {
     let idx = -1;
@@ -118,7 +141,7 @@ export function LanternWalk() {
     if (released.length > 10) return;
     const id = nextId.current++;
     setReleased((r) => [...r, { id, x: e.clientX, y: e.clientY }]);
-    setShowHint(false);
+    setReleasedOnce(true);
     getAudio().chime();
     window.setTimeout(() => setReleased((r) => r.filter((l) => l.id !== id)), 9000);
   };
@@ -156,8 +179,8 @@ export function LanternWalk() {
       {/* hai đứa */}
       <div
         ref={walkersRef}
-        className="pointer-events-none absolute left-[max(4vw,calc(50vw_-_340px))] w-[min(54vw,calc(28dvh*220/230))]"
-        style={{ bottom: `calc(100dvh * ${(800 - 620) / 800} - min(54vw, 28dvh * 220 / 230) * ${8 / 220})` }}
+        className="pointer-events-none absolute left-[max(30vw,calc(50vw_-_220px))] w-[min(54vw,calc(28svh*220/230))]"
+        style={{ bottom: `calc(100svh * ${(800 - 620) / 800} - min(54vw, 28svh * 220 / 230) * ${8 / 220})` }}
       >
         {/* ánh đèn hắt sau lưng để bóng hai đứa nổi lên */}
         <div
@@ -171,7 +194,54 @@ export function LanternWalk() {
           className="anim-flicker absolute -bottom-[14%] left-[20%] h-[26%] w-[130%] rounded-[50%]"
           style={{ background: `radial-gradient(ellipse 50% 50% at 60% 50%, ${lantern.glow}66, ${lantern.glow}1f 45%, transparent 72%)` }}
         />
-        <Walkers herLantern={lantern.id} walking={walking} className="w-full" />
+        {/* xe máy của LuLu: chạy từ phải sang, phanh lại bên trái MyMy, rồi dựng đó */}
+        {phase !== "wait" && (
+          <motion.div className="absolute bottom-[1.5%] left-[-60%] w-[68%]" style={{ x: parkedX }}>
+            <motion.div
+              initial={{ x: "180vw" }}
+              animate={{ x: "0vw" }}
+              transition={{ duration: ARRIVE_SECONDS, ease: [0.12, 0.55, 0.3, 1] }}
+            >
+              <motion.div
+                animate={phase === "dismount" || phase === "walk" ? { y: [0, -6, 0] } : { y: [0, -1.5, 0] }}
+                transition={phase === "arrive" ? { duration: 0.25, repeat: Infinity } : { duration: 0.4 }}
+              >
+                <MotoRider moving={phase === "arrive"} rider={phase === "arrive"} className="w-full" />
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        )}
+
+        <motion.div
+          animate={phase === "dismount" ? { y: [0, -8, 0] } : { y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Walkers herLantern={lantern.id} walking={walking && phase === "walk"} withHim={phase === "dismount" || phase === "walk"} className="w-full" />
+        </motion.div>
+
+        {/* hướng dẫn: chạm vào chiếc đèn đang cầm để thả đèn */}
+        <AnimatePresence>
+          {phase === "walk" && !releasedOnce && (
+            <motion.div
+              className="absolute bottom-[80%] right-[-6%] flex w-[max(190px,90%)] flex-col items-end"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ delay: 1.5, duration: 0.6 }}
+            >
+              <p className="rounded-[12px] bg-cloud px-3 py-2 text-right text-[13.5px] font-semibold leading-snug text-[#2a1406] shadow-[0_8px_20px_-6px_rgba(0,0,0,0.6)]">
+                {w.tapHint}
+              </p>
+              <motion.div
+                className="mr-[2%] mt-6 w-9"
+                animate={{ y: [0, 8, 0] }}
+                transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <TapIcon />
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* cỏ sát ống kính */}
@@ -200,9 +270,21 @@ export function LanternWalk() {
       </div>
 
       {/* lời thì thầm theo đoạn đường */}
-      <div className="pointer-events-none absolute inset-x-0 top-[26dvh] flex justify-center px-8 text-center">
+      <div className="pointer-events-none absolute inset-x-0 top-[26svh] flex justify-center px-8 text-center">
         <AnimatePresence mode="wait">
-          {caption >= 0 && (
+          {(phase === "arrive" || phase === "dismount") && (
+            <motion.p
+              key={phase}
+              initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
+              transition={{ duration: 1.2 }}
+              className="font-hand text-[21px] leading-[1.8] text-moon [text-shadow:0_2px_16px_rgba(6,8,30,0.9)] text-balance"
+            >
+              {phase === "arrive" ? w.arrive : w.intro}
+            </motion.p>
+          )}
+          {phase === "walk" && caption >= 0 && (
             <motion.p
               key={caption}
               initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
@@ -217,20 +299,6 @@ export function LanternWalk() {
         </AnimatePresence>
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 top-[calc(env(safe-area-inset-top)+18px)] flex justify-center">
-        <AnimatePresence>
-          {showHint && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="rounded-full bg-shadow/55 px-3.5 py-1.5 text-[13px] font-medium text-cloud/85"
-            >
-              {w.tapHint}
-            </motion.p>
-          )}
-        </AnimatePresence>
-      </div>
     </motion.section>
   );
 }

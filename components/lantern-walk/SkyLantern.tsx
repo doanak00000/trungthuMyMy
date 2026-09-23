@@ -9,7 +9,7 @@ export function SkyLantern({ left, delay, duration, size }: { left: number; dela
       className="absolute bottom-[30%]"
       style={{ left: `${left}%`, width: size }}
       initial={{ y: 0, opacity: 0 }}
-      animate={{ y: "-60dvh", opacity: [0, 0.9, 0.9, 0], x: [0, 8, -6, 4] }}
+      animate={{ y: "-60vh", opacity: [0, 0.9, 0.9, 0], x: [0, 8, -6, 4] }}
       transition={{ duration, delay, repeat: Infinity, ease: "linear", times: [0, 0.15, 0.8, 1] }}
     >
       <svg viewBox="0 0 24 32" className="w-full" overflow="visible">

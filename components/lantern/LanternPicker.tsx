@@ -32,7 +32,7 @@ export function LanternPicker() {
 
   return (
     <motion.section
-      className="relative flex min-h-dvh flex-col items-center px-4 pb-[calc(env(safe-area-inset-bottom)+28px)] pt-[calc(env(safe-area-inset-top)+19vh)]"
+      className="no-scrollbar absolute inset-0 flex flex-col items-center overflow-y-auto px-4 pb-[calc(env(safe-area-inset-bottom)+22px)] pt-[calc(env(safe-area-inset-top)+11svh)]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 0.8 } }}
@@ -42,7 +42,7 @@ export function LanternPicker() {
         <p className="mt-1.5 text-[15px] text-mist">{m.sub}</p>
       </header>
 
-      <div className="mt-6 w-full max-w-[440px]">
+      <div className="mt-3 w-full max-w-[440px]">
         {ROWS.map((row, r) => (
           <div key={r} className="relative mt-2 pt-5">
             {/* sợi dây */}
@@ -61,7 +61,7 @@ export function LanternPicker() {
                     onClick={() => pick(id)}
                     aria-pressed={active}
                     aria-label={l.name}
-                    className="group relative flex w-[27%] max-w-[116px] flex-col items-center pb-1 pt-1 transition-opacity duration-500"
+                    className="group relative flex w-[27%] max-w-[min(116px,11svh)] flex-col items-center pb-1 pt-1 transition-opacity duration-500"
                     style={{ opacity: dim ? 0.45 : 1, marginTop: i === 1 && row.length === 3 ? 10 : 0 }}
                   >
                     <motion.div
@@ -77,7 +77,7 @@ export function LanternPicker() {
                         halo={!dim}
                       />
                     </motion.div>
-                    <span className={`mt-1 text-[13px] font-semibold ${active ? "text-glow" : "text-cloud/80"}`}>{l.name}</span>
+                    <span className={`mt-1 whitespace-nowrap text-[12px] font-semibold ${active ? "text-glow" : "text-cloud/80"}`}>{l.name}</span>
                   </button>
                 );
               })}
@@ -86,7 +86,7 @@ export function LanternPicker() {
         ))}
       </div>
 
-      <div className="mt-auto flex min-h-[120px] flex-col items-center justify-end gap-3 pt-4 text-center">
+      <div className="mt-auto flex min-h-[112px] shrink-0 flex-col items-center justify-end gap-3 pt-3 text-center">
         <AnimatePresence mode="wait">
           {current && (
             <motion.p

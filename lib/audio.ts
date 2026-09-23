@@ -144,6 +144,35 @@ class AudioEngine {
     this.cymbal(t + 1.34);
   }
 
+  /** Tiếng xe máy chạy tới rồi phanh lại */
+  motor(seconds = 3.4) {
+    const c = this.ready();
+    if (!c) return;
+    const t = c.currentTime;
+    const o = c.createOscillator();
+    const lp = c.createBiquadFilter();
+    const g = c.createGain();
+    const lfo = c.createOscillator();
+    const lg = c.createGain();
+    o.type = "sawtooth";
+    o.frequency.setValueAtTime(70, t);
+    o.frequency.linearRampToValueAtTime(92, t + seconds * 0.5);
+    o.frequency.linearRampToValueAtTime(48, t + seconds);
+    lp.type = "lowpass";
+    lp.frequency.value = 420;
+    lfo.frequency.value = 14;
+    lg.gain.value = 0.05;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.09, t + seconds * 0.35);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + seconds + 0.4);
+    lfo.connect(lg).connect(g.gain);
+    o.connect(lp).connect(g).connect(this.sfxBus!);
+    o.start(t);
+    lfo.start(t);
+    o.stop(t + seconds + 0.5);
+    lfo.stop(t + seconds + 0.5);
+  }
+
   // ---------- internals ----------
 
   private ready() {

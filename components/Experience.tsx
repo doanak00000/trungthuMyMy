@@ -13,6 +13,7 @@ import dynamic from "next/dynamic";
 import { Fireflies } from "@/components/easter-eggs/Fireflies";
 import { EasterEggSheets } from "@/components/easter-eggs/EasterEggSheets";
 import { getAudio } from "@/lib/audio";
+import { messages } from "@/data/messages";
 
 // Các màn sau được tải dần (lazy) để lần mở đầu tiên thật nhẹ trên 4G.
 const loadFestival = () => import("@/components/festival/FestivalStreet").then((m) => m.FestivalStreet);
@@ -45,7 +46,7 @@ function Stage() {
   const withFireflies = scene === "festival" || scene === "walk" || scene === "bridge";
 
   return (
-    <main className="relative min-h-dvh overflow-hidden">
+    <main className="fixed inset-0 overflow-hidden">
       <NightSky introStage={scene === "intro" ? introStage : 9} />
 
       <AnimatePresence mode="wait">
@@ -63,6 +64,9 @@ function Stage() {
 
       <SkyHitLayer />
       <SoundToggle />
+      <p className="pointer-events-none fixed inset-x-0 bottom-[max(3px,env(safe-area-inset-bottom))] z-[36] overflow-hidden whitespace-nowrap px-2 text-center text-[8.5px] leading-tight text-cloud/40">
+        {messages.copyright}
+      </p>
       <EasterEggSheets />
     </main>
   );

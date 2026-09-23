@@ -12,7 +12,7 @@ export function FlowerGift({ gift, tilt }: { gift: Gift; tilt: number }) {
   return (
     <figure className="flex w-full flex-col items-center">
       <motion.div
-        className="relative isolate w-[min(72vw,320px,40dvh)]"
+        className="relative isolate w-[min(72vw,320px,40svh)]"
         initial={{ rotate: 0 }}
         animate={{ rotate: tilt }}
         transition={{ delay: 0.6, type: "spring", damping: 12 }}

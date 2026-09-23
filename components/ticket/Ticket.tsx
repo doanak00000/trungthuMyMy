@@ -28,7 +28,7 @@ export function Ticket() {
     window.setTimeout(() => getAudio().thud(), 380);
     await new Promise((r) => window.setTimeout(r, 1300));
     await controls.start({
-      y: "-110vh",
+      y: "-110svh",
       rotate: -8,
       scale: 0.7,
       transition: { duration: 1.4, ease: [0.55, 0, 0.3, 1] },
@@ -38,7 +38,7 @@ export function Ticket() {
 
   return (
     <motion.section
-      className="relative flex min-h-dvh flex-col items-center justify-center gap-9 px-5 py-[calc(env(safe-area-inset-top)+56px)]"
+      className="no-scrollbar absolute inset-0 flex flex-col items-center justify-center-safe gap-7 overflow-y-auto px-5 pb-[calc(env(safe-area-inset-bottom)+24px)] pt-[calc(env(safe-area-inset-top)+48px)]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 0.6 } }}

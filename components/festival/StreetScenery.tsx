@@ -4,7 +4,8 @@
  */
 import { GlowDefs, glow } from "@/components/ui/GlowDefs";
 
-export const STREET_W = 1800;
+/** Chừa một đoạn 300 cho gian trò chơi, các thứ từ x ≥ 1000 đã dời sang phải 300. */
+export const STREET_W = 2100;
 export const STREET_H = 800;
 
 const LANTERN_COLORS = ["#e8472e", "#ffa028", "#25b597", "#d8428f", "#ffc45c"];
@@ -23,10 +24,13 @@ const HOUSES: House[] = [
   { x: 470, w: 100, top: 300, roof: "gable" },
   { x: 570, w: 110, top: 250, roof: "tile" },
   { x: 680, w: 70, top: 340, roof: "flat" },
-  { x: 1010, w: 90, top: 300, roof: "gable" },
-  { x: 1100, w: 120, top: 260, roof: "tile" },
-  { x: 1220, w: 90, top: 320, roof: "flat" },
-  { x: 1310, w: 70, top: 360, roof: "tile" },
+  { x: 1000, w: 110, top: 290, roof: "tile" },
+  { x: 1120, w: 90, top: 330, roof: "flat" },
+  { x: 1215, w: 90, top: 280, roof: "gable" },
+  { x: 1310, w: 90, top: 300, roof: "gable" },
+  { x: 1400, w: 120, top: 260, roof: "tile" },
+  { x: 1520, w: 90, top: 320, roof: "flat" },
+  { x: 1610, w: 70, top: 360, roof: "tile" },
 ];
 
 function housePath({ x, w, top, roof }: House) {
@@ -158,11 +162,12 @@ export function StreetScenery() {
       <LanternString x1={0} x2={260} y={250} sag={30} seed={1} count={6} />
       <LanternString x1={260} x2={690} y={300} sag={46} seed={2} count={9} />
       <LanternString x1={680} x2={1030} y={270} sag={60} seed={3} count={8} />
-      <LanternString x1={1010} x2={1380} y={280} sag={40} seed={4} count={8} />
-      <LanternString x1={1380} x2={1560} y={330} sag={24} seed={5} count={4} />
+      <LanternString x1={1010} x2={1320} y={260} sag={50} seed={6} count={7} />
+      <LanternString x1={1310} x2={1680} y={280} sag={40} seed={4} count={8} />
+      <LanternString x1={1680} x2={1860} y={330} sag={24} seed={5} count={4} />
 
       {/* cây đa lớn gần cuối phố */}
-      <g fill="#080a24">
+      <g fill="#080a24" transform="translate(300 0)">
         <path d="M1420 600 C 1428 540 1424 480 1412 440 L1440 440 C 1446 490 1452 550 1460 600 Z" />
         <path d="M1310 450 C 1300 400 1340 360 1380 368 C 1392 320 1450 300 1490 330 C 1530 310 1590 340 1580 390 C 1620 410 1610 470 1560 470 C 1540 500 1470 492 1450 470 C 1420 490 1350 488 1340 470 C 1310 470 1300 460 1310 450 Z" />
         {[1350, 1372, 1520, 1548].map((x, i) => (
@@ -173,34 +178,34 @@ export function StreetScenery() {
       {/* mặt đường + vũng sáng dưới đèn */}
       <rect x="0" y="600" width={STREET_W} height="100" fill="url(#st-road)" />
       <rect x="0" y="598" width={STREET_W} height="3" fill="#232a70" />
-      {[150, 460, 860, 1210].map((x) => (
+      {[150, 460, 860, 1130, 1510].map((x) => (
         <ellipse key={x} cx={x} cy="630" rx="180" ry="36" fill="url(#st-pool)" />
       ))}
 
       {/* bờ kè + sông */}
       <rect x="0" y="692" width={STREET_W} height="10" fill="#1e2466" />
-      {Array.from({ length: 45 }, (_, i) => (
+      {Array.from({ length: Math.ceil(STREET_W / 40) }, (_, i) => (
         <rect key={i} x={i * 40 + 6} y="682" width="4" height="12" fill="#1e2466" />
       ))}
       <rect x="0" y="702" width={STREET_W} height="98" fill="url(#st-river)" />
       {/* bóng đèn soi dưới sông */}
       <g className="anim-ripple">
-        {Array.from({ length: 26 }, (_, i) => {
+        {Array.from({ length: 31 }, (_, i) => {
           const x = 30 + i * 68 + rand(i) * 30;
           const color = LANTERN_COLORS[i % LANTERN_COLORS.length];
           return <rect key={i} x={x} y={718 + (i % 3) * 16} width={18 + rand(i + 9) * 22} height="2.5" rx="1.2" fill={color} opacity="0.45" />;
         })}
       </g>
       <g className="anim-ripple" style={{ animationDelay: "-1.8s" }}>
-        {Array.from({ length: 30 }, (_, i) => (
+        {Array.from({ length: 35 }, (_, i) => (
           <rect key={i} x={i * 60 + rand(i + 3) * 40} y={730 + (i % 4) * 15} width={10 + rand(i + 5) * 26} height="1.6" rx="0.8" fill="#8a93e0" opacity="0.28" />
         ))}
       </g>
 
       {/* đoạn cuối phố tối dần: lối nhỏ bí mật */}
-      <rect x="1540" y="0" width="260" height="700" fill="url(#st-fade)" />
+      <rect x="1840" y="0" width="260" height="700" fill="url(#st-fade)" />
       <g fill="#070920">
-        <path d="M1580 600 C 1600 560 1650 552 1680 570 C 1710 540 1770 548 1800 574 V600 Z" />
+        <path d="M1880 600 C 1900 560 1950 552 1980 570 C 2010 540 2070 548 2100 574 V600 Z" />
       </g>
     </svg>
   );
@@ -217,9 +222,10 @@ export function FarRoofs() {
         <path d="M820 600 V430 L800 430 Q860 410 880 380 Q920 392 960 380 Q980 410 1040 430 L1020 430 V600 Z" />
         <path d="M1000 600 V390 L1080 370 L1160 400 V350 H1240 V420 L1320 400 V600 Z" />
         <path d="M1300 600 V430 L1400 400 L1480 430 V380 L1560 360 L1640 390 V420 L1720 400 L1800 420 V600 Z" />
+        <path d="M1790 600 V410 L1870 390 V360 H1950 V420 L2030 400 L2100 420 V600 Z" />
       </g>
       <g fill="#ffb957" opacity="0.35">
-        {Array.from({ length: 40 }, (_, i) => (
+        {Array.from({ length: 47 }, (_, i) => (
           <rect key={i} x={20 + i * 44 + rand(i + 40) * 20} y={440 + rand(i + 80) * 120} width="6" height="8" rx="1" />
         ))}
       </g>

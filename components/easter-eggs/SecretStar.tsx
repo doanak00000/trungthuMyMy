@@ -14,7 +14,7 @@ export function SecretStar() {
         getAudio().bell(1.5);
         setOverlay("star");
       }}
-      className="pointer-events-auto absolute left-[9%] top-[13vh] grid size-11 place-items-center"
+      className="pointer-events-auto absolute left-[9%] top-[13svh] grid size-11 place-items-center"
     >
       <svg viewBox="0 0 24 24" className="anim-shimmer size-5 drop-shadow-[0_0_6px_rgba(255,190,220,0.9)]">
         <path

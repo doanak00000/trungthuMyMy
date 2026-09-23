@@ -65,7 +65,7 @@ export function BridgeScene() {
       transition={{ duration: 2 }}
     >
       {/* mặt nước + bóng trăng */}
-      <div className="absolute inset-x-0 bottom-0 h-[38dvh]" style={{ background: "linear-gradient(180deg, #111a5a 0%, #080c30 100%)" }}>
+      <div className="absolute inset-x-0 bottom-0 h-[38svh]" style={{ background: "linear-gradient(180deg, #111a5a 0%, #080c30 100%)" }}>
         <div className="absolute inset-x-0 top-0 h-[2px] bg-[#2d3590]" />
         <div className="absolute left-1/2 top-0 flex h-full w-[46vmin] -translate-x-1/2 flex-col items-center gap-[10px] pt-3 opacity-80">
           {Array.from({ length: 6 }, (_, i) => (
@@ -79,7 +79,7 @@ export function BridgeScene() {
       </div>
 
       {/* cầu + hai đứa */}
-      <div className="absolute bottom-[calc(38dvh_-_min(92vw,560px,50dvh)*0.11)] left-1/2 aspect-[400/260] w-[min(92vw,560px,50dvh)] -translate-x-1/2">
+      <div className="absolute bottom-[calc(38svh_-_min(92vw,560px,50svh)*0.11)] left-1/2 aspect-[400/260] w-[min(92vw,560px,50svh)] -translate-x-1/2">
         <ArchBridge />
         <div className="absolute bottom-[56%] left-1/2 w-[40%] -translate-x-1/2">
           <Walkers herLantern={lantern.id} walking={false} className="w-full" />
@@ -87,7 +87,7 @@ export function BridgeScene() {
       </div>
 
       {/* lời */}
-      <div className="absolute inset-x-0 top-[calc(62dvh_+_min(96px,11dvh))] flex flex-col items-center gap-2 px-8 text-center [text-shadow:0_2px_14px_rgba(6,8,30,0.95)]">
+      <div className="absolute inset-x-0 top-[calc(62svh_+_min(96px,11svh))] flex flex-col items-center gap-2 px-8 text-center [text-shadow:0_2px_14px_rgba(6,8,30,0.95)]">
         <AnimatePresence>
           {stage >= 1 && (
             <motion.p

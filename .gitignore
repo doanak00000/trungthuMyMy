@@ -7,3 +7,4 @@ next-env.d.ts
 .env*.local
 .impeccable/review
 .impeccable/hook.cache.json
+*.jfif

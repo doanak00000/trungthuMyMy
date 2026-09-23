@@ -97,8 +97,11 @@ export const messages = {
   },
 
   walk: {
+    /** Lúc LuLu chạy xe tới đón */
+    arrive: `${him} chạy xe tới đón ${her} nè.`,
+    /** Lúc LuLu xuống xe, nắm tay */
     intro: `Đi thôi. ${him} cầm tay em.`,
-    tapHint: "Chạm để thả đèn",
+    tapHint: "My chạm vào đèn đang cầm để thả đèn cho dui",
     captions: [
       { at: 0.03, text: "Phố đèn đông vui ghê." },
       { at: 0.24, text: "Đi chậm thôi, mình không vội." },
@@ -155,6 +158,8 @@ export const messages = {
     },
     close: "Đóng",
   },
+
+  copyright: "Bản quyền thuộc về ChaserLuLu. Vui lòng không sao chép dưới mọi hình thức.",
 
   sound: {
     on: "Tắt nhạc",

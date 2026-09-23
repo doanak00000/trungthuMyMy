@@ -37,6 +37,9 @@ body {
   background: var(--color-night);
   color: var(--color-cloud);
   height: 100%;
+  /* cả web là một khung đứng yên vừa màn hình: không cuộn trang, để thanh URL
+     của trình duyệt điện thoại không che mất nút bấm ở dưới */
+  overflow: hidden;
 }
 
 body {

@@ -8,6 +8,15 @@ export const couple = {
   him: "LuLu",
 } as const;
 
+/**
+ * Ảnh mặt ghép vào đầu hai nhân vật khi đi rước đèn và trên cầu.
+ * Ảnh vuông, mặt nằm giữa (web tự cắt tròn). Để null thì dùng đầu bóng giấy.
+ */
+export const faces: { her: string | null; him: string | null } = {
+  her: "/faces/mymy.webp",
+  him: "/faces/lulu.webp",
+};
+
 export type LanternId = "star" | "rabbit" | "moon" | "flower" | "lulu";
 
 export type LanternOption = {

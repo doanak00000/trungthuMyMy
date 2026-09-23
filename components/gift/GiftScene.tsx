@@ -57,21 +57,21 @@ export function GiftScene() {
       <motion.div
         aria-hidden
         className="pointer-events-none fixed inset-0"
-        style={{ background: "radial-gradient(circle at 50% 22vh, transparent 0, transparent min(34vmin,200px), #070a26 min(52vmin,300px))" }}
+        style={{ background: "radial-gradient(circle at 50% 22svh, transparent 0, transparent min(34vmin,200px), #070a26 min(52vmin,300px))" }}
         initial={{ opacity: 0 }}
         animate={{ opacity: phase === "idle" ? 0.35 : 0.55 }}
         transition={{ duration: 1.6 }}
       />
       <motion.div
         aria-hidden
-        className="pointer-events-none fixed left-1/2 top-[-10vh] size-[140vmin] -translate-x-1/2 rounded-full"
+        className="pointer-events-none fixed left-1/2 top-[-10svh] size-[140vmin] -translate-x-1/2 rounded-full"
         style={{ background: "radial-gradient(closest-side, rgba(255,230,164,0.35), rgba(255,196,92,0.08) 55%, transparent)" }}
         initial={{ opacity: 0 }}
         animate={{ opacity: phase === "idle" ? 0 : 1 }}
         transition={{ duration: 2.4 }}
       />
 
-      <div className="relative flex min-h-dvh flex-col items-center justify-center px-5 pb-[calc(env(safe-area-inset-bottom)+32px)] pt-[calc(env(safe-area-inset-top)+64px)]">
+      <div className="relative flex min-h-svh flex-col items-center justify-center px-5 pb-[calc(env(safe-area-inset-bottom)+32px)] pt-[calc(env(safe-area-inset-top)+64px)]">
         {step > 0 && (
           <p className="absolute left-1/2 top-[calc(env(safe-area-inset-top)+22px)] -translate-x-1/2 rounded-full bg-shadow/55 px-3 py-1 text-[12px] font-semibold tracking-wide text-cloud/80">
             {g.counter(step, total)}
@@ -82,7 +82,7 @@ export function GiftScene() {
           {boxVisible && (
             <motion.div
               key="box"
-              className="mt-[22vh] flex flex-col items-center"
+              className="mt-[22svh] flex flex-col items-center"
               exit={{ opacity: 0, y: 30, scale: 0.9, transition: { duration: 0.6 } }}
             >
               <motion.button

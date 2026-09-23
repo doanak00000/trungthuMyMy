@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useDragControls } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { messages } from "@/data/messages";
@@ -20,6 +20,7 @@ type Props = {
  */
 export function Sheet({ open, onClose, title, children, tone = "night" }: Props) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const drag = useDragControls();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -49,7 +50,7 @@ export function Sheet({ open, onClose, title, children, tone = "night" }: Props)
             onClick={onClose}
           />
           <motion.div
-            className="relative flex max-h-[88dvh] w-full max-w-[520px] flex-col overflow-hidden rounded-t-[28px] pb-[env(safe-area-inset-bottom)]"
+            className="relative flex max-h-[88svh] w-full max-w-[520px] flex-col overflow-hidden rounded-t-[28px] pb-[env(safe-area-inset-bottom)]"
             style={{
               background:
                 tone === "hush"
@@ -62,12 +63,16 @@ export function Sheet({ open, onClose, title, children, tone = "night" }: Props)
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 32, stiffness: 300 }}
             drag="y"
+            dragControls={drag}
+            dragListener={false}
             dragConstraints={{ top: 0, bottom: 0 }}
             dragElastic={{ top: 0, bottom: 0.6 }}
             onDragEnd={(_, info) => {
               if (info.offset.y > 110 || info.velocity.y > 600) onClose();
             }}
           >
+            {/* chỉ vuốt ở phần đầu tấm giấy mới kéo xuống đóng, để trò chơi bên trong chạm thoải mái */}
+            <div className="touch-none" onPointerDown={(e) => drag.start(e)}>
             <div className="flex items-center justify-between px-5 pt-3">
               <span aria-hidden className="mx-auto h-1 w-10 rounded-full bg-cloud/25" />
             </div>
@@ -85,7 +90,8 @@ export function Sheet({ open, onClose, title, children, tone = "night" }: Props)
                 </svg>
               </button>
             </div>
-            <div className="thin-scrollbar overflow-y-auto overscroll-contain px-6 pb-8 pt-2" onPointerDownCapture={(e) => e.stopPropagation()}>
+            </div>
+            <div className="thin-scrollbar overflow-y-auto overscroll-contain px-6 pb-8 pt-2">
               {children}
             </div>
           </motion.div>

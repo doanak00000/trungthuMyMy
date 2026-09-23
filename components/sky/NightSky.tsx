@@ -10,7 +10,7 @@ type MoonPose = { x: string; y: string; scale: number; glow: number; opacity: nu
 
 /** Vị trí mặt trăng theo từng cảnh. Mặt trăng là một nhân vật đi theo cả buổi tối. */
 const POSES: Record<Scene, MoonPose> = {
-  intro: { x: "0vw", y: "4vh", scale: 1, glow: 0.8, opacity: 1 },
+  intro: { x: "0vw", y: "2vh", scale: 1, glow: 0.8, opacity: 1 },
   ticket: { x: "24vw", y: "-4vh", scale: 0.42, glow: 0.5, opacity: 0.9 },
   lantern: { x: "-22vw", y: "-4vh", scale: 0.38, glow: 0.5, opacity: 0.9 },
   festival: { x: "22vw", y: "-5vh", scale: 0.36, glow: 0.55, opacity: 1 },
@@ -57,7 +57,7 @@ export function NightSky({ introStage = 3 }: { introStage?: number }) {
 
       {/* mây mỏng trôi ngang, mép mềm */}
       <motion.div
-        className="absolute left-0 top-[22vh] h-[16vh] w-[240vw]"
+        className="absolute left-0 top-[22svh] h-[16svh] w-[240vw]"
         initial={{ x: "-60vw" }}
         animate={{ x: "0vw" }}
         transition={{ duration: 120, repeat: Infinity, repeatType: "mirror", ease: "linear" }}
@@ -107,7 +107,7 @@ function MoonFrame({
   children: React.ReactNode;
 }) {
   return (
-    <div className="absolute left-1/2 top-[6vh] -translate-x-1/2">
+    <div className="absolute left-1/2 top-[6svh] -translate-x-1/2">
       <motion.div
         initial={false}
         animate={{
@@ -118,7 +118,7 @@ function MoonFrame({
         }}
         transition={{ duration: slow ? 4.2 : 2.4, ease: [0.22, 1, 0.36, 1] }}
         style={{ originY: 0 }}
-        className="relative size-[min(78vmin,460px)]"
+        className="relative size-[min(78vmin,460px,34svh)]"
       >
         {children}
       </motion.div>

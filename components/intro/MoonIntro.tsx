@@ -39,7 +39,7 @@ export function MoonIntro({ stage, setStage }: { stage: number; setStage: (n: nu
 
   return (
     <motion.section
-      className="relative flex min-h-dvh flex-col items-center justify-end px-6 pb-[calc(env(safe-area-inset-bottom)+40px)] pt-[46vh]"
+      className="no-scrollbar absolute inset-0 flex flex-col items-center justify-end-safe overflow-y-auto px-6 pb-[calc(env(safe-area-inset-bottom)+28px)] pt-[calc(env(safe-area-inset-top)+12px)]"
       onClick={skip}
       exit={{ opacity: 0, filter: "blur(6px)", transition: { duration: 1.1 } }}
     >
@@ -70,7 +70,7 @@ export function MoonIntro({ stage, setStage }: { stage: number; setStage: (n: nu
               initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-8 text-[22px] font-extrabold leading-snug text-cloud text-balance [text-shadow:0_0_24px_rgba(255,190,90,0.45)]"
+              className="mt-6 text-[22px] font-extrabold leading-snug text-cloud text-balance [text-shadow:0_0_24px_rgba(255,190,90,0.45)]"
             >
               {reveal} <Heart className="inline size-5 -translate-y-0.5 align-middle" />
             </motion.p>
@@ -78,7 +78,7 @@ export function MoonIntro({ stage, setStage }: { stage: number; setStage: (n: nu
         </AnimatePresence>
       </div>
 
-      <div className="relative mt-10 h-14">
+      <div className="relative mt-7 h-14 shrink-0">
         <AnimatePresence>
           {stage >= 8 && (
             <motion.div

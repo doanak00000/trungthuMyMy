@@ -13,13 +13,16 @@ import { MoonRabbit } from "@/components/rabbit/MoonRabbit";
 import { RabbitQuiz } from "@/components/rabbit/RabbitQuiz";
 import { LionSpot } from "@/components/lion-dance/LionSpot";
 import { FlowerGarden } from "@/components/garden/FlowerGarden";
+import { GameBooth } from "@/components/games/GameBooth";
+import { GameCorner } from "@/components/games/GameCorner";
+import { games } from "@/data/games";
 import { getAudio } from "@/lib/audio";
 import { FarRoofs, StreetScenery, STREET_H, STREET_W } from "./StreetScenery";
 import { Hotspot } from "./Hotspot";
 import { GlowDefs, glow } from "@/components/ui/GlowDefs";
 
-const MAIN: LocationId[] = ["mooncake", "lion", "rabbit"];
-const STREET_WIDTH = `calc(100dvh * ${STREET_W / STREET_H})`;
+const MAIN: LocationId[] = ["mooncake", "lion", "games", "rabbit"];
+const STREET_WIDTH = `calc(100svh * ${STREET_W / STREET_H})`;
 
 /** Màn 4 — con phố đèn cuộn ngang. Ghé đủ chỗ thì LuLu tới rủ đi rước đèn. */
 export function FestivalStreet() {
@@ -94,7 +97,7 @@ export function FestivalStreet() {
       </motion.div>
 
       <div ref={scroller} className="no-scrollbar absolute inset-0 overflow-x-auto overflow-y-hidden overscroll-x-contain">
-        <div className="relative h-dvh" style={{ width: STREET_WIDTH }}>
+        <div className="relative h-svh" style={{ width: STREET_WIDTH }}>
           <StreetScenery />
 
           <Hotspot
@@ -123,7 +126,19 @@ export function FestivalStreet() {
           </span>
 
           <Hotspot
-            left={pct(1150)}
+            left={pct(990)}
+            top={pctY(372)}
+            width={pct(260)}
+            label={games.label}
+            ariaLabel={games.heading}
+            visited={visited.includes("games")}
+            onActivate={() => open("games")}
+          >
+            <GameBooth className="w-full" />
+          </Hotspot>
+
+          <Hotspot
+            left={pct(1450)}
             top={pctY(470)}
             width={pct(125)}
             label={f.labels.rabbit}
@@ -140,7 +155,7 @@ export function FestivalStreet() {
             aria-label={f.labels.garden}
             onClick={() => open("garden")}
             className="absolute"
-            style={{ left: `${pct(1560)}%`, top: `${pctY(500)}%`, width: `${pct(240)}%`, height: `${pctY(200)}%` }}
+            style={{ left: `${pct(1860)}%`, top: `${pctY(500)}%`, width: `${pct(240)}%`, height: `${pctY(200)}%` }}
           >
             <svg viewBox="0 0 240 200" className="size-full" aria-hidden overflow="visible">
               <GlowDefs />
@@ -241,6 +256,9 @@ export function FestivalStreet() {
       </Sheet>
       <Sheet open={sheet === "rabbit"} onClose={() => setSheet(null)} title={f.labels.rabbit}>
         <RabbitQuiz />
+      </Sheet>
+      <Sheet open={sheet === "games"} onClose={() => setSheet(null)} title={games.heading}>
+        <GameCorner />
       </Sheet>
       <Sheet open={sheet === "garden"} onClose={() => setSheet(null)} title={messages.garden.heading} tone="hush">
         <FlowerGarden />

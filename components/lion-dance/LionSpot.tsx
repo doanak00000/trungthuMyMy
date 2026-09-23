@@ -5,19 +5,29 @@ import { useEffect, useState } from "react";
 import { messages } from "@/data/messages";
 import { getAudio } from "@/lib/audio";
 import { LionDance } from "./LionDance";
+import { TapIcon } from "@/components/ui/TapIcon";
 
 const CONFETTI = ["#ffc45c", "#e8472e", "#25b597", "#d8428f", "#fff4e0"];
 
-/** Lân múa ngay trên phố: chạm là nhảy, lắc đầu, chớp mắt, tung giấy màu, có trống. */
+/**
+ * Lân múa ngay trên phố, tự múa suốt. Chạm vào thì lân nhảy vọt, trống vang,
+ * tung giấy màu và nói một câu.
+ */
 export function LionSpot({ onDance }: { onDance: () => void }) {
   const [round, setRound] = useState(0);
+  const [burst, setBurst] = useState(false);
   const [bubble, setBubble] = useState(false);
 
   useEffect(() => {
     if (!round) return;
+    setBurst(true);
     setBubble(true);
-    const t = window.setTimeout(() => setBubble(false), 3800);
-    return () => window.clearTimeout(t);
+    const a = window.setTimeout(() => setBurst(false), 1700);
+    const b = window.setTimeout(() => setBubble(false), 3800);
+    return () => {
+      window.clearTimeout(a);
+      window.clearTimeout(b);
+    };
   }, [round]);
 
   const dance = () => {
@@ -29,23 +39,33 @@ export function LionSpot({ onDance }: { onDance: () => void }) {
   return (
     <div className="relative">
       <button type="button" aria-label="Múa lân" onClick={dance} className="block w-full">
-        <LionDance key={round} dancing={round > 0} className="w-full" />
+        <LionDance burst={burst} className="w-full" />
       </button>
+
+      {/* ngón tay chỉ: chạm vào lân đi */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute left-[46%] top-[-6%] w-[20%]"
+        animate={{ y: [0, 10, 0], opacity: burst ? 0 : 1 }}
+        transition={{ y: { duration: 1.1, repeat: Infinity, ease: "easeInOut" }, opacity: { duration: 0.3 } }}
+      >
+        <TapIcon />
+      </motion.div>
 
       {/* giấy màu */}
       <AnimatePresence>
-        {round > 0 && (
+        {burst && (
           <div key={round} className="pointer-events-none absolute left-[36%] top-[30%]">
-            {Array.from({ length: 14 }, (_, i) => {
-              const a = (i / 14) * Math.PI * 2;
-              const dist = 50 + (i % 4) * 16;
+            {Array.from({ length: 16 }, (_, i) => {
+              const a = (i / 16) * Math.PI * 2;
+              const dist = 56 + (i % 4) * 18;
               return (
                 <motion.span
                   key={i}
                   className="absolute block h-2 w-1.5 rounded-[1px]"
                   style={{ background: CONFETTI[i % CONFETTI.length] }}
                   initial={{ x: 0, y: 0, opacity: 1, rotate: 0 }}
-                  animate={{ x: Math.cos(a) * dist, y: [0, Math.sin(a) * dist - 30, Math.sin(a) * dist + 40], opacity: [1, 1, 0], rotate: 360 + i * 40 }}
+                  animate={{ x: Math.cos(a) * dist, y: [0, Math.sin(a) * dist - 36, Math.sin(a) * dist + 44], opacity: [1, 1, 0], rotate: 360 + i * 40 }}
                   transition={{ duration: 1.6, ease: "easeOut" }}
                 />
               );

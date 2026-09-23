@@ -4,7 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { lanterns, type LanternId, type LanternOption } from "@/data/festival";
 
 export type Scene = "intro" | "ticket" | "lantern" | "festival" | "walk" | "bridge" | "gift";
-export type LocationId = "mooncake" | "rabbit" | "lion" | "garden";
+export type LocationId = "mooncake" | "rabbit" | "lion" | "games" | "garden";
 export type Overlay = null | "promises" | "star" | "firefly";
 
 type StoryState = {
@@ -41,8 +41,15 @@ export function StoryProvider({ children }: { children: ReactNode }) {
     if (s) setScene(s);
     const l = q.get("lantern") as LanternId | null;
     if (l) setLanternId(l);
+    if (q.get("resetGames")) {
+      try {
+        window.localStorage.removeItem("tt-games");
+      } catch {
+        /* ignore */
+      }
+    }
     const v = Number(q.get("visited") ?? 0);
-    if (v) setVisited((["mooncake", "lion", "rabbit", "garden"] as LocationId[]).slice(0, v));
+    if (v) setVisited((["mooncake", "lion", "games", "rabbit", "garden"] as LocationId[]).slice(0, v));
   }, []);
 
   const visit = useCallback((id: LocationId) => {
