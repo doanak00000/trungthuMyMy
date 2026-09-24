@@ -14,7 +14,7 @@ export const couple = {
  */
 export const faces: { her: string | null; him: string | null } = {
   her: "/faces/mymy.webp",
-  him: "/faces/lulu.webp",
+  him: "/faces/lulu2.webp",
 };
 
 export type LanternId = "star" | "rabbit" | "moon" | "flower" | "lulu";
